@@ -2,7 +2,10 @@ module github.com/zjfcyefeng/rtctp
 
 go 1.21.8
 
-require github.com/dubbogo/gost v1.14.0
+require (
+	dario.cat/mergo v1.0.0
+	github.com/dubbogo/gost v1.14.0
+)
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"dario.cat/mergo"
 	getty "github.com/apache/dubbo-getty"
 	"github.com/zjfcyefeng/rtctp/internal/model"
 )
@@ -37,6 +38,9 @@ func (h *DefaultEventHandler) Handle(session getty.Session, req *model.Request) 
 	// TODO business logic
 	switch req.Event {
 	case EventHeartbeat:
+		// TODO heartbeat logic
+		heartbeat := model.Heartbeat{}
+		mergo.Merge(&heartbeat, req.Body)
 		resp.Code = StatusSuccess
 		resp.Msg = "pong"
 		resp.Data = "pong"

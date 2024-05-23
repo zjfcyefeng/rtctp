@@ -18,3 +18,7 @@ type Response struct {
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
+
+type Heartbeat struct {
+	Timestamp int64 `json:"timestamp"`
+}
