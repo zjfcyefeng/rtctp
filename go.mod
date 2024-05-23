@@ -5,6 +5,7 @@ go 1.21.8
 require (
 	dario.cat/mergo v1.0.0
 	github.com/dubbogo/gost v1.14.0
+	go.uber.org/zap v1.24.0
 )
 
 require (
@@ -50,7 +51,6 @@ require (
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/automaxprocs v1.5.3 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	go.uber.org/zap v1.24.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
