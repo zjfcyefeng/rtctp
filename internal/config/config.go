@@ -8,6 +8,7 @@ type Config struct {
 	Port            int           `json:",default=10086"`
 	Path            string        `json:",default=/rtctp"`
 	Mode            string        `json:",default=pro,options=dev|test|rt|pre|pro"`
+	LogPath         string        `json:",default=rtctp.log"`
 	SslEnable       bool          `json:",optional"`
 	CertFile        string        `json:",optional"`
 	KeyFile         string        `json:",optional"`

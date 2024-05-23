@@ -9,6 +9,7 @@ import (
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zjfcyefeng/rtctp/internal/config"
 	"github.com/zjfcyefeng/rtctp/internal/server"
+	"go.uber.org/zap"
 )
 
 var configFile = flag.String("f", "etc/rtctp.yaml", "the config file")
@@ -23,6 +24,20 @@ func main() {
 	defer serviceGroup.Stop()
 
 	log := getty.GetLogger()
+	if cfg.Mode == "pro" || cfg.Mode == "pre" {
+		zapLoggerConfig := zap.NewProductionConfig()
+		zapLoggerConfig.OutputPaths = []string{"stdout", cfg.LogPath}
+		zapLoggerConfig.EncoderConfig = zap.NewProductionEncoderConfig()
+		zapLogger, err := zapLoggerConfig.Build(zap.AddCallerSkip(1))
+		if err == nil {
+			log = zapLogger.Sugar()
+			getty.SetLogger(log)
+			defer zapLogger.Sync()
+		} else {
+			log.Error(err)
+		}
+	}
+	
 	taskPool := gxsync.NewTaskPoolSimple(0)
 	defer taskPool.Close()
 
