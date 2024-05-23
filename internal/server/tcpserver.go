@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"net"
-	"time"
 
 	getty "github.com/apache/dubbo-getty"
 	gxnet "github.com/dubbogo/gost/net"
@@ -37,26 +36,18 @@ func (s *TCPServer) Start() {
 	serverOpts := []getty.ServerOption{getty.WithLocalAddress(addr)}
 	serverOpts = append(serverOpts, getty.WithServerTaskPool(s.taskPool))
 	server := getty.NewTCPServer(serverOpts...)
+	defer server.Close()
 	server.RunEventLoop(s.newSession)
 
-	ticker := time.NewTicker(s.cfg.FailFastTimeout)
-	defer ticker.Stop()
-	for {
-		select {
-		case <-ticker.C:
-			// TODO
-			fmt.Println("ticker time...")
-		case <-s.done:
-			server.Close()
-			return
-		}
+	for range s.done {
+		close(s.done)
+		return
 	}
 }
 
 func (s *TCPServer) Stop() {
 	fmt.Println("stop tcp server...")
 	s.done <- struct{}{}
-	close(s.done)
 }
 
 func (s *TCPServer) newSession(session getty.Session) error {

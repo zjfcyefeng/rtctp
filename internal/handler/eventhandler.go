@@ -7,15 +7,21 @@ import (
 )
 
 const (
-	WritePkgTimeout  = 1e9
-	StatusSuccess    = 200
-	StatusNotFound   = 404
-	StatusNotAllowed = 405
-	StatusFail       = 500
+	WritePkgTimeout          = 1e9
+	StatusContinue           = 100
+	StatusSuccess            = 200
+	StatusFound              = 302
+	StatusBadRequest         = 400
+	StatusUnauthorized       = 401
+	StatusNotFound           = 404
+	StatusNotAllowed         = 405
+	StatusFail               = 500
+	StatusServiceUnavailable = 503
+	StatusGatewayTimeout     = 504
 )
 
 const (
-	EventHeartbeat uint16 = iota + 1
+	EventHeartbeat uint16 = iota + 10000
 )
 
 type EventHandler interface {

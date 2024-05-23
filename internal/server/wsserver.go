@@ -32,21 +32,21 @@ func NewWSServer(cfg config.Config, log getty.Logger, taskPool gxsync.GenericTas
 }
 
 func (s *WSServer) Start() {
-	fmt.Println("start ws server...")
 	addr := gxnet.HostAddress(s.cfg.Host, s.cfg.Port+2)
+	fmt.Printf("start ws server at %s%s...\n", addr, s.cfg.Path)
 	serverOpts := []getty.ServerOption{getty.WithLocalAddress(addr)}
 	serverOpts = append(serverOpts, getty.WithServerTaskPool(s.taskPool))
 	serverOpts = append(serverOpts, getty.WithWebsocketServerPath(s.cfg.Path))
 	server := getty.NewWSServer(serverOpts...)
 	server.RunEventLoop(s.newSession)
 
-	ticker := time.NewTicker(s.cfg.FailFastTimeout)
+	ticker := time.NewTicker(s.cfg.HeartbeatPeriod)
 	defer ticker.Stop()
 	for {
 		select {
 		case <-ticker.C:
 			// TODO
-			fmt.Println("ticker time...")
+			fmt.Println("ws server ticker time...")
 		case <-s.done:
 			server.Close()
 			return
