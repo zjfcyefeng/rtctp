@@ -8,14 +8,14 @@ import (
 	"github.com/zjfcyefeng/rtctp/internal/model"
 )
 
-type JsonReadWriter struct {
+type JsonRequestReadWriter struct {
 }
 
-func NewJsonReadWriter() *JsonReadWriter {
-	return &JsonReadWriter{}
+func NewJsonRequestReadWriter() *JsonRequestReadWriter {
+	return &JsonRequestReadWriter{}
 }
 
-func (c *JsonReadWriter) Read(session getty.Session, data []byte) (interface{}, int, error) {
+func (c *JsonRequestReadWriter) Read(session getty.Session, data []byte) (interface{}, int, error) {
 	// Read Parse tcp/udp/websocket pkg from buffer and if possible return a complete pkg.
 	// When receiving a tcp network streaming segment, there are 4 cases as following:
 	// case 1: a error found in the streaming segment;
@@ -37,10 +37,10 @@ func (c *JsonReadWriter) Read(session getty.Session, data []byte) (interface{}, 
 		return nil, 0, err
 	}
 
-	return req, reqLen, nil
+	return &req, reqLen, nil
 }
 
-func (c *JsonReadWriter) Write(session getty.Session, pkg interface{}) ([]byte, error) {
+func (c *JsonRequestReadWriter) Write(session getty.Session, pkg interface{}) ([]byte, error) {
 	// Write if @Session is udpGettySession, the second parameter is UDPContext.
 	return json.Marshal(&pkg)
 }

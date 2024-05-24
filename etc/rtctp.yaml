@@ -1,4 +1,6 @@
 Name: rtctp
 Host: 0.0.0.0
 Port: 15566
+Mode: "dev"
+Path: "/ws"
 LogPath: "/Users/andy/logs/rtctp.log"

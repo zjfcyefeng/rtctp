@@ -25,8 +25,8 @@ func NewTCPServer(cfg config.Config, log getty.Logger, taskPool gxsync.GenericTa
 		done:          make(chan struct{}),
 		cfg:           cfg,
 		taskPool:      taskPool,
-		pkgHandler:    codec.NewJsonReadWriter(),
-		eventListener: listener.NewEventListener(cfg, log),
+		pkgHandler:    codec.NewJsonRequestReadWriter(),
+		eventListener: listener.NewServerEventListener(cfg, log),
 	}
 }
 

@@ -7,6 +7,7 @@ import (
 	gxsync "github.com/dubbogo/gost/sync"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zjfcyefeng/rtctp/internal/client"
 	"github.com/zjfcyefeng/rtctp/internal/config"
 	"github.com/zjfcyefeng/rtctp/internal/server"
 	"go.uber.org/zap"
@@ -37,7 +38,7 @@ func main() {
 			log.Error(err)
 		}
 	}
-	
+
 	taskPool := gxsync.NewTaskPoolSimple(0)
 	defer taskPool.Close()
 
@@ -46,6 +47,12 @@ func main() {
 
 	wsServer := server.NewWSServer(cfg, log, taskPool)
 	serviceGroup.Add(wsServer)
+
+	tcpClient := client.NewTCPClient(cfg, log)
+	serviceGroup.Add(tcpClient)
+
+	wsClient := client.NewWSClient(cfg, log)
+	serviceGroup.Add(wsClient)
 
 	serviceGroup.Start()
 }

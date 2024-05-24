@@ -16,7 +16,7 @@ var (
 	ErrTooManySessions = errors.New("too many sessions")
 )
 
-type DefaultEventListener struct {
+type ServerEventListener struct {
 	locker   sync.RWMutex
 	cfg      config.Config
 	log      getty.Logger
@@ -24,9 +24,9 @@ type DefaultEventListener struct {
 	sessions []getty.Session
 }
 
-func NewEventListener(cfg config.Config, log getty.Logger) *DefaultEventListener {
+func NewServerEventListener(cfg config.Config, log getty.Logger) *ServerEventListener {
 
-	return &DefaultEventListener{
+	return &ServerEventListener{
 		cfg:      cfg,
 		log:      log,
 		handler:  handler.NewDefaultEventHandler(log),
@@ -34,7 +34,7 @@ func NewEventListener(cfg config.Config, log getty.Logger) *DefaultEventListener
 	}
 }
 
-func (e *DefaultEventListener) OnOpen(session getty.Session) error {
+func (e *ServerEventListener) OnOpen(session getty.Session) error {
 	var err error
 	e.locker.RLock()
 	if len(e.sessions) >= e.cfg.MaxConns {
@@ -52,7 +52,7 @@ func (e *DefaultEventListener) OnOpen(session getty.Session) error {
 	return nil
 }
 
-func (e *DefaultEventListener) OnCron(session getty.Session) {
+func (e *ServerEventListener) OnCron(session getty.Session) {
 	var (
 		flag   bool
 		active time.Time
@@ -77,20 +77,20 @@ func (e *DefaultEventListener) OnCron(session getty.Session) {
 	}
 }
 
-func (e *DefaultEventListener) OnMessage(session getty.Session, pkg interface{}) {
+func (e *ServerEventListener) OnMessage(session getty.Session, pkg interface{}) {
 	req, ok := pkg.(*model.Request)
 	if !ok {
 		e.log.Warnf("illegal request{%#v}]", pkg)
 		return
 	}
 
-	err := e.handler.Handle(session, req)
+	err := e.handler.HandleRequest(session, req)
 	if err != nil {
 		e.log.Errorf("handle request{%#v} error{%v}", pkg, err)
 	}
 }
 
-func (e *DefaultEventListener) OnClose(session getty.Session) {
+func (e *ServerEventListener) OnClose(session getty.Session) {
 	e.log.Debug("session{%s} is closing......", session.Stat())
 	e.locker.Lock()
 	defer e.locker.Unlock()
@@ -99,7 +99,7 @@ func (e *DefaultEventListener) OnClose(session getty.Session) {
 	})
 }
 
-func (e *DefaultEventListener) OnError(session getty.Session, err error) {
+func (e *ServerEventListener) OnError(session getty.Session, err error) {
 	e.log.Errorf("session{%s} got error{%v}, will be closed", session.Stat(), err)
 	e.locker.Lock()
 	defer e.locker.Unlock()
